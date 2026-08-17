@@ -1,0 +1,102 @@
+<div class="dash">
+  <div class="dash-head">
+    <div>
+      <h1>Seller Dashboard</h1>
+      <p>Manage your catalog and fulfill orders.</p>
+    </div>
+    <a class="btn btn-primary" routerLink="/products/new">&#43; Add Product</a>
+  </div>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <div class="stats">
+    <div class="stat"><span class="num">{{ stats().products }}</span><span class="label">Products</span></div>
+    <div class="stat"><span class="num">{{ stats().stock }}</span><span class="label">Units in stock</span></div>
+    <div class="stat"><span class="num">{{ stats().pending }}</span><span class="label">Awaiting payment</span></div>
+    <div class="stat accent"><span class="num">{{ stats().paid }}</span><span class="label">Paid &amp; ready to ship</span></div>
+    <div class="stat"><span class="num">{{ stats().shipped }}</span><span class="label">Shipped</span></div>
+    <div class="stat dark"><span class="num">&#8377;{{ stats().revenue.toLocaleString('en-IN') }}</span><span class="label">Revenue</span></div>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Your Products</h2>
+      <a routerLink="/products/new">Add new &#8594;</a>
+    </div>
+    @if (loading()) {
+      <p class="muted">Loading...</p>
+    } @else if (products().length === 0) {
+      <div class="empty-row">No products yet. <a routerLink="/products/new">List your first product</a>.</div>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th></th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th></th></tr>
+          </thead>
+          <tbody>
+            @for (p of products(); track p.id) {
+              <tr>
+                <td class="thumb">
+                  @if (image(p)) {
+                    <img [src]="image(p)" alt="" />
+                  } @else {
+                    <div class="ph">{{ (p.brand || p.name).charAt(0) }}</div>
+                  }
+                </td>
+                <td>
+                  <a class="pname" [routerLink]="['/product', p.id]">{{ p.name }}</a>
+                  @if (p.brand) {
+                    <span class="pbrand">{{ p.brand }}</span>
+                  }
+                </td>
+                <td>{{ p.category || '—' }}</td>
+                <td class="price">{{ money(p.price) }}</td>
+                <td><span class="stock-badge" [class.low]="p.stockQty < 10">{{ p.stockQty }}</span></td>
+                <td class="actions">
+                  <a class="btn btn-outline" [routerLink]="['/product', p.id, 'edit']">Edit</a>
+                  <button class="btn btn-danger" (click)="deleteProduct(p)">Delete</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Orders on your products</h2>
+      <a routerLink="/orders">View all &#8594;</a>
+    </div>
+    @if (!loading() && orders().length === 0) {
+      <div class="empty-row">No orders yet.</div>
+    } @else {
+      <div class="order-list">
+        @for (order of orders(); track order.id) {
+          <div class="order-row">
+            <div class="oid">
+              <b>#{{ order.id }}</b>
+              <span [class]="'st ' + order.status.toLowerCase()">{{ order.status }}</span>
+            </div>
+            <div class="oproducts">
+              @for (item of order.items; track item.id) {
+                @if (item.sellerId === sellerId()?.userId) {
+                  <span>{{ item.productName }} &times;{{ item.quantity }}</span>
+                }
+              }
+            </div>
+            <div class="ototal">{{ money(order.totalAmount) }}</div>
+            @if (canShip(order)) {
+              <button class="btn btn-dark" (click)="ship(order)">&#128666; Ship</button>
+            } @else {
+              <span class="muted">—</span>
+            }
+          </div>
+        }
+      </div>
+    }
+  </section>
+</div>

@@ -1,0 +1,15 @@
+<div class="toasts">
+  @for (t of toasts(); track t.id) {
+    <div class="toast {{ t.type }}">
+      <span class="icon">
+        @switch (t.type) {
+          @case ('success') { &#10003; }
+          @case ('error') { &#10005; }
+          @default { &#8505; }
+        }
+      </span>
+      <span>{{ t.message }}</span>
+      <button (click)="toast.dismiss(t.id)" aria-label="Dismiss">&#215;</button>
+    </div>
+  }
+</div>

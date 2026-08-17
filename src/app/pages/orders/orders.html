@@ -1,0 +1,78 @@
+<div class="orders">
+  <h1>{{ role() === 'SELLER' ? 'Order Management' : 'Your Orders' }}</h1>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="muted">Loading orders...</p>
+  } @else if (orders().length === 0) {
+    <div class="empty">
+      <p class="emoji">&#128203;</p>
+      @if (role() === 'SELLER') {
+        <p>No orders for your products yet.</p>
+        <a class="btn btn-primary" routerLink="/">Browse the store</a>
+      } @else {
+        <p>You have no orders yet.</p>
+        <a class="btn btn-primary" routerLink="/">Start shopping</a>
+      }
+    </div>
+  } @else {
+    <div class="list">
+      @for (order of orders(); track order.id) {
+        <div class="order-card">
+          <div class="order-head">
+            <div>
+              <span class="oid">Order #{{ order.id }}</span>
+              <span class="date">{{ order.createdAt | date: 'medium' }}</span>
+            </div>
+            <div class="status" [class]="order.status.toLowerCase()">
+              @switch (order.status) {
+                @case ('PAID') { &#9989; Paid }
+                @case ('PENDING') { &#9203; Pending }
+                @case ('SHIPPED') { &#128666; Shipped }
+                @case ('FAILED') { &#10060; Failed }
+                @default { {{ order.status }} }
+              }
+            </div>
+          </div>
+
+          <div class="items">
+            @for (item of order.items; track item.id) {
+              <div class="item">
+                <a class="img" [routerLink]="['/product', item.productId]">
+                  @if (image(item)) {
+                    <img [src]="image(item)" alt="{{ item.productName }}" />
+                  } @else {
+                    <div class="ph">{{ initial(item) }}</div>
+                  }
+                </a>
+                <div class="info">
+                  <a class="name" [routerLink]="['/product', item.productId]">{{ item.productName }}</a>
+                  <p class="qty">
+                    {{ item.quantity }} &times; {{ money(item.unitPrice) }}
+                    @if (isSellerItem(item)) {
+                      <span class="yours">&#9734; Your product</span>
+                    }
+                  </p>
+                </div>
+                <p class="line-total">{{ money(item.unitPrice * item.quantity) }}</p>
+              </div>
+            }
+          </div>
+
+          <div class="order-foot">
+            <span class="total">Total: <b>{{ money(order.totalAmount) }}</b></span>
+            @if (order.status === 'PENDING') {
+              <button class="btn btn-accent" (click)="pay(order)">&#128176; Pay Now</button>
+            }
+            @if (canShip(order)) {
+              <button class="btn btn-dark" (click)="ship(order)">&#128666; Ship Order</button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,112 @@
+<header>
+  <div class="topbar">
+    <a class="logo" routerLink="/">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+        <path fill="#4f46e5" d="M12 2 2 7l10 5 10-5-10-5Z" />
+        <path fill="#f59e0b" d="m2 17 10 5 10-5V12l-10 5-10-5v5Z" />
+      </svg>
+      <span class="word"><b>Quick</b>Mart</span>
+    </a>
+
+    <div class="search">
+      <input
+        type="text"
+        placeholder="Search products, brands and more..."
+        [(ngModel)]="term"
+        (keyup.enter)="search()"
+        aria-label="Search products"
+      />
+      <button (click)="search()" aria-label="Search">&#128269;</button>
+    </div>
+
+    <div class="right">
+      @if (isLoggedIn()) {
+        @if (role() === 'SELLER') {
+          <a class="acct" routerLink="/dashboard" routerLinkActive="active-link">
+            <span class="line1">Seller</span>
+            <span class="line2">Dashboard</span>
+          </a>
+          <a class="acct" routerLink="/products/new">
+            <span class="line1">Sell</span>
+            <span class="line2">Add Product</span>
+          </a>
+          <a class="acct" routerLink="/orders" routerLinkActive="active-link">
+            <span class="line1">Track</span>
+            <span class="line2">Shipments</span>
+          </a>
+        } @else {
+          <a class="acct" routerLink="/orders" routerLinkActive="active-link">
+            <span class="line1">Track</span>
+            <span class="line2">Your Orders</span>
+          </a>
+          <a class="cart" routerLink="/cart">
+            <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2Zm10 0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2ZM7.17 14.75l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 20 4H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l.17-.25Z"
+              />
+            </svg>
+            <span class="cart-count">{{ cartCount() }}</span>
+            <span class="cart-label">Cart</span>
+          </a>
+        }
+        <button class="acct btn-logout" (click)="logout()">
+          <span class="line1">Hi, {{ user()?.name }}</span>
+          <span class="line2">Logout</span>
+        </button>
+      } @else {
+        <a class="acct" routerLink="/login">
+          <span class="line1">Hello,</span>
+          <span class="line2">Sign in</span>
+        </a>
+        <button class="btn btn-accent signup" routerLink="/register">Register</button>
+      }
+
+      <div class="settings">
+        <button class="gear" (click)="toggleMenu()" [class.open]="menuOpen()" aria-label="Settings">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.48.48 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58ZM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2Z"
+            />
+          </svg>
+        </button>
+
+        @if (menuOpen()) {
+          <div class="menu">
+            <div class="menu-item">
+              <span class="mi-label">Theme</span>
+              <button class="theme-toggle" (click)="toggleTheme()">
+                {{ isDark() ? '🌙 Light mode' : '☀️ Dark mode' }}
+              </button>
+            </div>
+            @if (isLoggedIn()) {
+              <button class="menu-item" (click)="goSettings()">
+                <span class="mi-label">Account &amp; Settings</span>
+                <span class="mi-arrow">&#8250;</span>
+              </button>
+              <button class="menu-item danger" (click)="logout()">
+                <span class="mi-label">Sign out</span>
+              </button>
+            } @else {
+              <button class="menu-item" routerLink="/login">
+                <span class="mi-label">Sign in</span>
+                <span class="mi-arrow">&#8250;</span>
+              </button>
+              <button class="menu-item" routerLink="/register">
+                <span class="mi-label">Create account</span>
+                <span class="mi-arrow">&#8250;</span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <nav class="catstrip">
+    @for (cat of categories; track cat) {
+      <button (click)="selectCategory(cat)">{{ cat }}</button>
+    }
+  </nav>
+</header>

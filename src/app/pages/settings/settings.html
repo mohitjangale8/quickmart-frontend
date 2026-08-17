@@ -1,0 +1,81 @@
+<div class="settings">
+  <h1>Settings</h1>
+
+  <div class="layout">
+    <section class="card">
+      <div class="section-head">
+        <h2>&#128100; Account</h2>
+      </div>
+      @if (isLoggedIn()) {
+        <div class="avatar-row">
+          <div class="avatar">{{ initial() }}</div>
+          <div>
+            <p class="name">{{ user()?.name }}</p>
+            <p class="email">{{ user()?.email }}</p>
+            <span class="role-badge">{{ user()?.role }}</span>
+          </div>
+        </div>
+        <label>
+          Name
+          <input type="text" [(ngModel)]="name" placeholder="Your name" />
+        </label>
+        <label>
+          Email
+          <input type="email" [value]="user()?.email" disabled />
+        </label>
+        <button class="btn btn-primary" [disabled]="saving()" (click)="saveName()">
+          {{ saving() ? 'Saving...' : 'Save Changes' }}
+        </button>
+      } @else {
+        <p class="muted">You are not signed in.</p>
+      }
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>&#128274; Change Password</h2>
+      </div>
+      @if (isLoggedIn()) {
+        <label>
+          Current password
+          <input type="password" [(ngModel)]="currentPassword" placeholder="Current password" />
+        </label>
+        <label>
+          New password
+          <input type="password" [(ngModel)]="newPassword" placeholder="Min 6 chars, one uppercase" />
+        </label>
+        <label>
+          Confirm new password
+          <input type="password" [(ngModel)]="confirmPassword" placeholder="Re-enter new password" />
+        </label>
+        <button class="btn btn-dark" [disabled]="changing()" (click)="changePassword()">
+          {{ changing() ? 'Updating...' : 'Update Password' }}
+        </button>
+      } @else {
+        <p class="muted">Sign in to change your password.</p>
+      }
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>&#127759; Appearance</h2>
+      </div>
+      <div class="theme-row">
+        <div>
+          <p class="theme-title">{{ isDark() ? 'Dark mode' : 'Light mode' }}</p>
+          <p class="muted small">Choose how QuickMart looks for you.</p>
+        </div>
+        <button class="switch" [class.on]="isDark()" (click)="toggleTheme()" aria-label="Toggle theme">
+          <span class="knob">{{ isDark() ? '&#127763;' : '&#9728;&#65039;' }}</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="card danger-zone">
+      <div class="section-head">
+        <h2>Session</h2>
+      </div>
+      <button class="btn btn-outline" (click)="signOut()">Sign out of QuickMart</button>
+    </section>
+  </div>
+</div>

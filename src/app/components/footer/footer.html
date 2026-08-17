@@ -1,0 +1,43 @@
+<footer>
+  <div class="trust-strip">
+    <div class="trust"><span>&#128666;</span> Free delivery on orders over &#8377;499</div>
+    <div class="trust"><span>&#8617;</span> 7-day easy returns</div>
+    <div class="trust"><span>&#128274;</span> Secure payments</div>
+    <div class="trust"><span>&#9734;</span> 100% genuine products</div>
+  </div>
+  <div class="cols">
+    <div class="col">
+      <a class="logo" routerLink="/">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path fill="#a5b4fc" d="M12 2 2 7l10 5 10-5-10-5Z" />
+          <path fill="#f59e0b" d="m2 17 10 5 10-5V12l-10 5-10-5v5Z" />
+        </svg>
+        <span><b>Quick</b>Mart</span>
+      </a>
+      <p>Your one-stop shop for electronics, fashion, home essentials and more.</p>
+    </div>
+    <div class="col">
+      <h4>Shop</h4>
+      <a routerLink="/" [queryParams]="{ category: 'Electronics' }">Electronics</a>
+      <a routerLink="/" [queryParams]="{ category: 'Fashion' }">Fashion</a>
+      <a routerLink="/" [queryParams]="{ category: 'Home & Kitchen' }">Home &amp; Kitchen</a>
+      <a routerLink="/" [queryParams]="{ category: 'Books' }">Books</a>
+    </div>
+    <div class="col">
+      <h4>Account</h4>
+      <a routerLink="/login">Sign in</a>
+      <a routerLink="/register">Register</a>
+      <a routerLink="/cart">Cart</a>
+      <a routerLink="/orders">Your orders</a>
+    </div>
+    <div class="col">
+      <h4>For sellers</h4>
+      <a routerLink="/products/new">List a product</a>
+      <a routerLink="/orders">Track shipments</a>
+    </div>
+  </div>
+  <div class="bottom">
+    <span>&copy; {{ year }} QuickMart. All rights reserved.</span>
+    <span>Made with &#9825; for great shopping</span>
+  </div>
+</footer>

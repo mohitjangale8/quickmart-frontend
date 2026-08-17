@@ -1,0 +1,74 @@
+<div class="form-page">
+  <p class="breadcrumbs">
+    <a routerLink="/">Home</a> &rsaquo;
+    <span>{{ editId() ? 'Edit Product' : 'Add Product' }}</span>
+  </p>
+  <form class="card" (ngSubmit)="submit()">
+    <h1>{{ editId() ? 'Edit Product' : 'Add Product' }}</h1>
+    <p class="sub">Fill in the details below to list your product on QuickMart.</p>
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+    <label>
+      Product Name
+      <input type="text" name="name" [(ngModel)]="name" placeholder="e.g. Wireless Bluetooth Headphones" required />
+    </label>
+    <div class="row">
+      <label>
+        Brand
+        <input type="text" name="brand" [(ngModel)]="brand" placeholder="e.g. Noise, Boat, Apple" />
+      </label>
+      <label>
+        Category
+        <select name="category" [(ngModel)]="category">
+          <option value="">Select category</option>
+          @for (cat of categories; track cat) {
+            <option [value]="cat">{{ cat }}</option>
+          }
+        </select>
+      </label>
+    </div>
+    <label>
+      Description
+      <textarea name="description" [(ngModel)]="description" rows="3" placeholder="Short description of your product"></textarea>
+    </label>
+    <div class="row">
+      <label>
+        Price (INR)
+        <input type="number" name="price" [(ngModel)]="price" min="0" step="0.01" placeholder="1999" required />
+      </label>
+      <label>
+        Stock Qty
+        <input type="number" name="stockQty" [(ngModel)]="stockQty" min="0" placeholder="10" required />
+      </label>
+    </div>
+    <label>
+      Product Image
+      <div class="upload-zone" [class.has-preview]="previewUrl()" (click)="fileInput.click()">
+        @if (uploading()) {
+          <div class="uploading">
+            <span class="spin"></span>
+            <span>Uploading to cloud...</span>
+          </div>
+        } @else if (previewUrl()) {
+          <img [src]="previewUrl()" alt="Preview" />
+          <p class="hint">Click to replace</p>
+        } @else {
+          <div class="placeholder">
+            <span class="icon">🖼</span>
+            <span>Click to choose an image</span>
+            <span class="hint">JPEG, PNG or WEBP &middot; up to 5MB</span>
+          </div>
+        }
+      </div>
+      <input #fileInput type="file" accept="image/jpeg,image/png,image/webp" (change)="onFileSelected($event)" hidden />
+    </label>
+    <label>
+      Or paste an Image URL
+      <input type="url" name="imageUrl" [(ngModel)]="imageUrl" placeholder="https://example.com/image.jpg" />
+    </label>
+    <button class="btn btn-primary btn-block" type="submit" [disabled]="loading()">
+      {{ loading() ? 'Saving...' : editId() ? 'Save Changes' : 'Publish Product' }}
+    </button>
+  </form>
+</div>

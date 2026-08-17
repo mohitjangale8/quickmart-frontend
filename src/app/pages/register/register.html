@@ -1,0 +1,56 @@
+<div class="auth-wrap">
+  <div class="panel">
+    <a class="logo" routerLink="/">
+      <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+        <path fill="#a5b4fc" d="M12 2 2 7l10 5 10-5-10-5Z" />
+        <path fill="#f59e0b" d="m2 17 10 5 10-5V12l-10 5-10-5v5Z" />
+      </svg>
+      <span><b>Quick</b>Mart</span>
+    </a>
+    <div class="panel-copy">
+      <h2>Start selling,<br />start shopping.</h2>
+      <p>Join QuickMart as a buyer to shop smart, or as a seller to reach thousands of customers.</p>
+      <ul>
+        <li>&#9889; Lightning-fast checkout</li>
+        <li>&#128202; Seller dashboard &amp; order tracking</li>
+        <li>&#127942; Exclusive offers for new users</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-side">
+    <form class="card" (ngSubmit)="submit()">
+      <h1>Create account</h1>
+      <p class="sub">Join QuickMart in under a minute.</p>
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+      <label>
+        Your name
+        <input type="text" name="name" [(ngModel)]="name" placeholder="Full name" required />
+      </label>
+      <label>
+        Email
+        <input type="email" name="email" [(ngModel)]="email" placeholder="you@example.com" required />
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" [(ngModel)]="password" placeholder="Min 6 characters, one uppercase" required minlength="6" />
+      </label>
+      <label>
+        I am a
+        <select name="role" [(ngModel)]="role">
+          <option value="BUYER">Buyer</option>
+          <option value="SELLER">Seller</option>
+        </select>
+      </label>
+      <button class="btn btn-primary btn-block" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Creating account...' : 'Create your account' }}
+      </button>
+      <p class="fine">Password must be at least 6 characters and contain an uppercase letter.</p>
+    </form>
+    <p class="switch">
+      Already have an account? <a routerLink="/login">Sign in</a>
+    </p>
+  </div>
+</div>

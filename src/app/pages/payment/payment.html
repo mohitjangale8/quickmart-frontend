@@ -1,0 +1,86 @@
+<div class="pay">
+  @if (loading()) {
+    <p class="muted">Loading payment details...</p>
+  } @else if (done()) {
+    <div class="success-card">
+      <div class="tick">&#10003;</div>
+      <h1>Payment Successful!</h1>
+      <p>Your order <b>#{{ order()?.id }}</b> has been paid. We&rsquo;re preparing your items.</p>
+      <a class="btn btn-primary" routerLink="/orders">Go to My Orders</a>
+    </div>
+  } @else if (error() || !order()) {
+    <div class="success-card">
+      <p class="emoji">&#128533;</p>
+      <p class="error">{{ error() ?? 'Unable to load order' }}</p>
+      <a class="btn btn-outline" routerLink="/orders">Back to orders</a>
+    </div>
+  } @else {
+    @let o = order()!;
+    <h1>Secure Checkout</h1>
+    <p class="sub">Order #{{ o.id }} &middot; {{ o.items.length }} item{{ o.items.length === 1 ? '' : 's' }}</p>    <div class="layout">
+      <section class="card">
+        <h2>Choose payment method</h2>
+        <div class="methods">
+          @for (m of methods; track m.id) {
+            <button class="method" [class.active]="method() === m.id" (click)="method.set(m.id)">
+              <span class="icon" [innerHTML]="m.icon"></span>
+              <span>{{ m.label }}</span>
+              <span class="radio"></span>
+            </button>
+          }
+        </div>
+
+        <div class="mock-field">
+          @switch (method()) {
+            @case ('UPI') {
+              <label>
+                UPI ID
+                <input type="text" placeholder="yourname@okbank" value="buyer@quickmart" disabled />
+              </label>
+            }
+            @case ('Card') {
+              <div class="row">
+                <label>
+                  Card number
+                  <input type="text" placeholder="4111 1111 1111 1111" disabled />
+                </label>
+                <label>
+                  Expiry
+                  <input type="text" placeholder="MM / YY" disabled />
+                </label>
+                <label>
+                  CVV
+                  <input type="password" placeholder="•••" disabled />
+                </label>
+              </div>
+            }
+            @default {
+              <p class="muted-note">This is a demo gateway. Click "Pay now" to complete payment in test mode.</p>
+            }
+          }
+        </div>
+
+        @if (error()) {
+          <p class="error">{{ error() }}</p>
+        }
+
+        <button class="btn btn-accent btn-block pay-btn" [disabled]="paying()" (click)="pay()">
+          {{ paying() ? 'Processing...' : 'Pay ' + money(o.totalAmount) }}
+        </button>
+        <p class="secure-note">&#128274; 256-bit SSL encrypted &middot; Test mode — no real money is charged</p>
+      </section>
+
+      <aside class="summary">
+        <h3>Order summary</h3>
+        @for (item of o.items; track item.id) {
+          <div class="sitem">
+            <span>{{ item.productName }} &times; {{ item.quantity }}</span>
+            <span>{{ money(item.unitPrice * item.quantity) }}</span>
+          </div>
+        }
+        <div class="srow"><span>Delivery</span><span class="free">FREE</span></div>
+        <div class="srow total"><span>Total</span><span>{{ money(o.totalAmount) }}</span></div>
+      </aside>
+    </div>
+  }
+</div>

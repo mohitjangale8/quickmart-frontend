@@ -1,0 +1,64 @@
+<div class="cart">
+  <h1>Your Cart <span class="muted">({{ count() }} item{{ count() === 1 ? '' : 's' }})</span></h1>
+
+  @if (count() === 0) {
+    <div class="empty">
+      <p class="emoji">&#128722;</p>
+      <p>Your cart is empty.</p>
+      <a class="btn btn-primary" routerLink="/">Start shopping</a>
+    </div>
+  } @else {
+    <div class="layout">
+      <div class="list">
+        @for (item of items(); track item.id) {
+          <div class="cart-card">
+            <a class="img" [routerLink]="['/product', item.productId]">
+              @if (image(item)) {
+                <img [src]="image(item)" alt="{{ item.name }}" />
+              } @else {
+                <div class="ph">{{ initial(item) }}</div>
+              }
+            </a>
+            <div class="info">
+              @if (item.brand) {
+                <p class="brand">{{ item.brand }}</p>
+              }
+              <a class="name" [routerLink]="['/product', item.productId]">{{ item.name }}</a>
+              <p class="price">{{ money(item.price) }}</p>
+              <div class="stepper">
+                <button [disabled]="item.quantity <= 1" (click)="setQty(item.id, item.quantity - 1, item.maxStock)">&#8722;</button>
+                <span>{{ item.quantity }}</span>
+                <button [disabled]="item.quantity >= item.maxStock" (click)="setQty(item.id, item.quantity + 1, item.maxStock)">&#43;</button>
+              </div>
+              <p class="stock">Seller keeps {{ item.maxStock }} in stock</p>
+            </div>
+            <div class="side">
+              <p class="line-total">{{ money(item.price * item.quantity) }}</p>
+              <button class="btn btn-outline remove" (click)="remove(item.id)">Remove</button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <aside class="summary">
+        <h3>Price Details</h3>
+        <div class="row">
+          <span>Price ({{ count() }} item{{ count() === 1 ? '' : 's' }})</span>
+          <span>{{ money(subtotal()) }}</span>
+        </div>
+        <div class="row">
+          <span>Delivery</span>
+          <span class="free">FREE</span>
+        </div>
+        <div class="row total">
+          <span>Total Payable</span>
+          <span>{{ money(subtotal()) }}</span>
+        </div>
+        <button class="btn btn-accent btn-block place" [disabled]="placing()" (click)="placeOrder()">
+          {{ placing() ? 'Placing order...' : 'Place Order' }}
+        </button>
+        <a class="cont" routerLink="/">Continue shopping &#8594;</a>
+      </aside>
+    </div>
+  }
+</div>

@@ -1,0 +1,19 @@
+<nav class="navbar">
+  <a class="brand" routerLink="/">QuickMart</a>
+  <div class="links">
+    <a routerLink="/products" routerLinkActive="active">Catalog</a>
+    @if (isLoggedIn()) {
+      @if (role() === 'SELLER') {
+        <a routerLink="/products/new" routerLinkActive="active">Add Product</a>
+      }
+      @if (role() === 'BUYER') {
+        <a routerLink="/orders" routerLinkActive="active">My Orders</a>
+      }
+      <span class="user">Hi, {{ user()?.name }}</span>
+      <button class="btn-link" (click)="logout()">Logout</button>
+    } @else {
+      <a routerLink="/login">Login</a>
+      <a routerLink="/register">Register</a>
+    }
+  </div>
+</nav>

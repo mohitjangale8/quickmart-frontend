@@ -1,0 +1,144 @@
+.auth-wrap {
+  min-height: calc(100vh - 64px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.panel {
+  background: var(--gradient);
+  color: #fff;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.6rem;
+    align-self: flex-start;
+
+    b {
+      color: #a5b4fc;
+    }
+  }
+
+  .panel-copy {
+    max-width: 380px;
+
+    h2 {
+      font-size: 2.2rem;
+      line-height: 1.2;
+      margin: 0 0 1rem;
+    }
+
+    p {
+      opacity: 0.92;
+      line-height: 1.6;
+      margin: 0 0 1.5rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+
+      li {
+        font-size: 0.95rem;
+        font-weight: 550;
+        opacity: 0.95;
+      }
+    }
+  }
+}
+
+.form-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  gap: 1rem;
+
+  .card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.25rem;
+    box-shadow: var(--shadow);
+
+    h1 {
+      margin: 0 0 0.25rem;
+    }
+
+    .sub {
+      margin: 0 0 1.5rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1.1rem;
+      font-weight: 600;
+      font-size: 0.88rem;
+
+      input,
+      select {
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.7rem 0.85rem;
+        font-size: 0.92rem;
+        font-family: inherit;
+        color: var(--text);
+        background: var(--surface-2);
+        outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+        &:focus {
+          border-color: var(--primary-2);
+          box-shadow: 0 0 0 4px var(--focus-ring);
+          background: var(--surface);
+        }
+      }
+    }
+
+    .btn-block {
+      padding: 0.8rem;
+      font-size: 0.95rem;
+    }
+
+    .fine {
+      margin: 1rem 0 0;
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+  }
+
+  .switch {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+}
+
+@media (max-width: 860px) {
+  .auth-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .panel {
+    display: none;
+  }
+}

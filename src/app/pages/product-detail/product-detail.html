@@ -1,0 +1,105 @@
+<div class="detail">
+  @if (loading()) {
+    <div class="skeleton-wrap">
+      <div class="skeleton img"></div>
+      <div class="skeleton-body">
+        <div class="skeleton line w60"></div>
+        <div class="skeleton line w80"></div>
+        <div class="skeleton line w40"></div>
+      </div>
+    </div>
+  } @else if (error() || !product()) {
+    <div class="empty">
+      <p class="emoji">&#128533;</p>
+      <p class="error">{{ error() ?? 'Product not found' }}</p>
+      <a class="btn btn-primary" routerLink="/">Back to store</a>
+    </div>
+  } @else {
+    @let p = product()!;
+    <nav class="crumbs">
+      <a routerLink="/">Home</a>
+      <span>/</span>
+      <span>{{ p.category || 'Products' }}</span>
+    </nav>
+
+    <div class="layout">
+      <div class="gallery">
+        @if (image()) {
+          <img [src]="image()" alt="{{ p.name }}" />
+        } @else {
+          <div class="ph">{{ (p.brand || p.name).charAt(0) }}</div>
+        }
+        @if (off() >= 10) {
+          <span class="badge">{{ off() }}% OFF</span>
+        }
+      </div>
+
+      <div class="info">
+        @if (p.brand) {
+          <p class="brand">{{ p.brand }}</p>
+        }
+        <h1>{{ p.name }}</h1>
+
+        <div class="meta">
+          <span class="rating">
+            <span class="score">4.2</span>
+            <span class="stars">&#9733;</span>
+          </span>
+          <span class="reviews">1,234 ratings &amp; 212 reviews</span>
+          <span class="seller">Sold by {{ sellerLabel() }}</span>
+        </div>
+
+        <div class="price-box">
+          <span class="price">{{ money(p.price) }}</span>
+          <span class="mrp">{{ money(mrp()) }}</span>
+          <span class="discount">{{ off() }}% off</span>
+        </div>
+
+        <p class="taxnote">Inclusive of all taxes. Free delivery on orders above &#8377;499.</p>
+
+        <p class="stock" [class.out]="p.stockQty <= 0">
+          {{ p.stockQty > 0 ? 'In stock — ' + p.stockQty + ' available' : 'Out of stock' }}
+        </p>
+
+        @if (isOwner()) {
+          <a class="btn btn-outline" [routerLink]="['/product', p.id, 'edit']">Edit this product</a>
+        } @else {
+          <div class="qty-row">
+            <span>Quantity</span>
+            <div class="stepper">
+              <button [disabled]="qty() <= 1" (click)="dec()">&#8722;</button>
+              <span>{{ qty() }}</span>
+              <button [disabled]="qty() >= p.stockQty || p.stockQty <= 0" (click)="inc()">&#43;</button>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-accent" [disabled]="p.stockQty <= 0" (click)="addToCart()">&#128722; Add to Cart</button>
+            <button class="btn btn-dark" [disabled]="p.stockQty <= 0" (click)="buyNow()">&#9889; Buy Now</button>
+          </div>
+        }
+
+        <div class="offers">
+          <h4>Available offers</h4>
+          <p><b>Bank Offer</b> &#128176; 10% instant discount on all UPI payments</p>
+          <p><b>Festive Offer</b> &#127881; Extra &#8377;100 off on first order</p>
+          <p><b>No Cost EMI</b> &#128176; Available on eligible cards</p>
+        </div>
+      </div>
+    </div>
+
+    @if (p.description) {
+      <section class="desc">
+        <h3>Product Description</h3>
+        <p>{{ p.description }}</p>
+      </section>
+    }
+
+    <div class="trust-row">
+      <div><span>&#8617;</span> 7-day easy returns</div>
+      <div><span>&#128666;</span> Fast delivery</div>
+      <div><span>&#128274;</span> Secure payments</div>
+      <div><span>&#9734;</span> Quality assured</div>
+    </div>
+  }
+</div>

@@ -1,0 +1,100 @@
+<div class="home">
+  <section class="hero">
+    <div class="hero-copy">
+      @if (isBuyer()) {
+        <span class="pill">&#127881; Welcome back, {{ user()?.name }}</span>
+        <h1>Fresh deals just<br />for you.</h1>
+        <p>Your cart has {{ cartCount() }} item{{ cartCount() === 1 ? '' : 's' }}. Grab a deal before it&rsquo;s gone!</p>
+        <a class="btn btn-accent" routerLink="/cart">Go to Cart</a>
+      } @else {
+        <span class="pill">&#9889; Deals of the day</span>
+        <h1>Everything you love,<br />delivered fast.</h1>
+        <p>Electronics, fashion, home essentials and more — with hassle-free returns.</p>
+        <a class="btn btn-accent" routerLink="/" [queryParams]="{ category: 'Electronics' }">Shop Electronics</a>
+      }
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="card-float">&#128241; 20% off</div>
+      <div class="card-float c2">&#127873; Free delivery</div>
+    </div>
+  </section>
+
+  <div class="cat-chips">
+    <button [class.active]="category() === null" (click)="goCategory(null)">All</button>
+    @for (cat of categories(); track cat) {
+      <button [class.active]="category() === cat" (click)="goCategory(cat)">{{ cat }}</button>
+    }
+  </div>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <div class="grid">
+      @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+        <div class="skeleton-card">
+          <div class="skeleton img"></div>
+          <div class="skeleton line w70"></div>
+          <div class="skeleton line w50"></div>
+        </div>
+      }
+    </div>
+  } @else if (products().length === 0) {
+    <div class="empty">
+      <p class="emoji">&#128269;</p>
+      <p>No products found.</p>
+      @if (isSeller()) {
+        <a class="btn btn-primary" routerLink="/products/new">Add your first product</a>
+      }
+    </div>
+  } @else {
+    <div class="grid">
+      @for (p of products(); track p.id) {
+        <div class="card" [routerLink]="['/product', p.id]">
+          <div class="img-wrap">
+            @if (image(p)) {
+              <img [src]="image(p)" alt="{{ p.name }}" loading="lazy" />
+            } @else {
+              <div class="ph">{{ (p.brand || p.name).charAt(0) }}</div>
+            }
+            @if (off(p) >= 15) {
+              <span class="badge">{{ off(p) }}% off</span>
+            }
+          </div>
+          <div class="body">
+            @if (p.brand) {
+              <p class="brand">{{ p.brand }}</p>
+            }
+            <h3 class="title">{{ p.name }}</h3>
+            <p class="rating">
+              <span class="score">4.2</span>
+              <span class="stars">&#9733;</span>
+              <span class="reviews">(1.2k)</span>
+            </p>
+            <p class="price-row">
+              <span class="price">{{ money(p.price) }}</span>
+              <span class="mrp">{{ money(mrp(p)) }}</span>
+              <span class="discount">{{ off(p) }}% off</span>
+            </p>
+            <p class="stock" [class.low]="p.stockQty < 10">
+              {{ p.stockQty > 0 ? (p.stockQty + ' left in stock') : 'Out of stock' }}
+            </p>
+          </div>
+          <div class="actions" (click)="$event.stopPropagation()">
+            @if (isBuyer()) {
+              <button class="btn btn-accent" [disabled]="p.stockQty <= 0" (click)="addToCart(p)">Add to Cart</button>
+              <button class="btn btn-dark" [disabled]="p.stockQty <= 0" (click)="buyNow(p)">Buy Now</button>
+            } @else if (isSeller() && owned(p)) {
+              <button class="btn btn-outline" [routerLink]="['/product', p.id, 'edit']">Edit</button>
+            } @else {
+              <button class="btn btn-primary" routerLink="/login">Sign in to buy</button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
