@@ -3,7 +3,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
-import { OrderService } from '../../services/order.service';
 import { ToastService } from '../../services/toast.service';
 import { Product } from '../../models';
 import { discountPercent, imageFor, mrpOf, rupees } from '../../utils';
@@ -19,7 +18,6 @@ export class Home {
   private readonly cart = inject(CartService);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
-  private readonly orderApi = inject(OrderService);
   private readonly toast = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
 
@@ -95,10 +93,10 @@ export class Home {
       this.router.navigate(['/login'], { queryParams: { next: '/' } });
       return;
     }
-    this.orderApi.create({ items: [{ productId: p.id, quantity: 1 }] }).subscribe({
-      next: (order) => this.router.navigate(['/payment', order.id]),
-      error: (err) => this.toast.error(err.error?.message ?? 'Failed to place order')
-    });
+    if (p.stockQty <= 0) return;
+    this.cart.add(p.id, 1);
+    this.toast.success(`${p.name} added to cart`);
+    this.router.navigate(['/checkout']);
   }
 
   owned(p: Product): boolean {

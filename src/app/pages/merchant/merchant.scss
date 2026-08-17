@@ -1,0 +1,60 @@
+.merchant {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+
+  h1 {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+  }
+
+  .sub {
+    color: var(--muted);
+    margin: 0 0 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .form-side {
+    .card {
+      background: var(--surface);
+      border-color: var(--border);
+    }
+
+    label {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    input {
+      background: var(--surface-2);
+      border-color: var(--border);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-2);
+    }
+
+    .switch {
+      a {
+        color: var(--primary-2);
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .fine {
+      margin: 0.5rem 0 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+  }
+}

@@ -24,6 +24,11 @@ export class AuthService {
       .pipe(tap((res) => this.setSession(res)));
   }
 
+  registerSeller(payload: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/register/seller`, payload)
+      .pipe(tap((res) => this.setSession(res)));
+  }
+
   login(payload: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/login`, payload)
       .pipe(tap((res) => this.setSession(res)));

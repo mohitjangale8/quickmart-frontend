@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { CheckoutResponse, PaymentResponse } from '../models';
+import { CheckoutResponse, PaymentResponse, RazorpayOrderResponse, RazorpayVerifyRequest } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class PaymentService {
@@ -15,5 +15,13 @@ export class PaymentService {
 
   confirm(paymentId: number): Observable<PaymentResponse> {
     return this.http.post<PaymentResponse>(`${this.base}/${paymentId}/confirm`, {});
+  }
+
+  razorpayOrder(orderId: number): Observable<RazorpayOrderResponse> {
+    return this.http.post<RazorpayOrderResponse>(`${this.base}/razorpay/order`, { orderId });
+  }
+
+  razorpayVerify(payload: RazorpayVerifyRequest): Observable<PaymentResponse> {
+    return this.http.post<PaymentResponse>(`${this.base}/razorpay/verify`, payload);
   }
 }

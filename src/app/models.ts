@@ -73,6 +73,45 @@ export interface Page<T> {
 
 export type OrderStatus = 'PENDING' | 'PAID' | 'FAILED' | 'SHIPPED';
 
+export type TrackingStatus =
+  | 'ORDERED'
+  | 'PACKED'
+  | 'SHIPPED'
+  | 'OUT_FOR_DELIVERY'
+  | 'DELIVERED';
+
+export type ReturnStatus =
+  | 'RETURN_REQUESTED'
+  | 'RETURN_APPROVED'
+  | 'PICKUP_SCHEDULED'
+  | 'PICKED_UP'
+  | 'REFUND_INITIATED'
+  | 'REFUNDED';
+
+export interface Address {
+  id: number;
+  userId: number;
+  name: string;
+  phone: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  pincode: string;
+  isDefault: boolean;
+}
+
+export interface AddressRequest {
+  name: string;
+  phone: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  pincode: string;
+  isDefault?: boolean;
+}
+
 export interface OrderItem {
   id: number;
   productId: number;
@@ -90,11 +129,30 @@ export interface Order {
   status: OrderStatus;
   totalAmount: number;
   createdAt: string;
+  trackingStatus?: TrackingStatus | null;
+  returnStatus?: ReturnStatus | null;
+  address?: Address | null;
   items: OrderItem[];
+}
+
+export interface TrackingEventResponse {
+  id: number;
+  type: 'DELIVERY' | 'RETURN';
+  stage: string;
+  note: string;
+  createdAt: string;
+}
+
+export interface TrackingResponse {
+  orderId: number;
+  trackingStatus: TrackingStatus | null;
+  returnStatus: ReturnStatus | null;
+  events: TrackingEventResponse[];
 }
 
 export interface OrderCreateRequest {
   items: { productId: number; quantity: number }[];
+  addressId: number;
 }
 
 export interface CheckoutResponse {
@@ -111,4 +169,18 @@ export interface PaymentResponse {
   amount: number;
   status: string;
   gatewayTxnId: string;
+}
+
+export interface RazorpayOrderResponse {
+  paymentId: number;
+  razorpayOrderId: string;
+  amountPaise: number;
+  currency: string;
+  keyId: string;
+}
+
+export interface RazorpayVerifyRequest {
+  razorpayOrderId: string;
+  razorpayPaymentId: string;
+  razorpaySignature: string;
 }

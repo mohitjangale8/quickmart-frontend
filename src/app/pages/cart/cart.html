@@ -54,8 +54,8 @@
           <span>Total Payable</span>
           <span>{{ money(subtotal()) }}</span>
         </div>
-        <button class="btn btn-accent btn-block place" [disabled]="placing()" (click)="placeOrder()">
-          {{ placing() ? 'Placing order...' : 'Place Order' }}
+        <button class="btn btn-accent btn-block place" (click)="placeOrder()">
+          Checkout &#8594;
         </button>
         <a class="cont" routerLink="/">Continue shopping &#8594;</a>
       </aside>

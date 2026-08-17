@@ -1,0 +1,78 @@
+<div class="tracking">
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+    <a class="btn" routerLink="/orders">Back to orders</a>
+  } @else if (loading()) {
+    <p class="muted">Loading tracking...</p>
+  } @else if (order() && tracking()) {
+    <div class="head">
+      <a class="back" routerLink="/orders">&#8592; My Orders</a>
+      <h1>Order #{{ order()?.id }} Tracking</h1>
+      <p class="sub">
+        Placed {{ order()?.createdAt | date: 'medium' }} &middot;
+        Total <b>{{ money(order()?.totalAmount ?? 0) }}</b>
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>&#128666; Delivery</h2>
+      @if (tracking()?.trackingStatus) {
+        <p class="current">
+          Current: <b>{{ label(tracking()?.trackingStatus ?? '') }}</b>
+        </p>
+      } @else {
+        <p class="current muted">Tracking will begin once the order is paid.</p>
+      }
+      <ol class="steps">
+        @for (stage of deliveryStages; track stage) {
+          <li [class.done]="deliveryDone(stage)" [class.current]="deliveryCurrent(stage)">
+            <span class="dot">&#10003;</span>
+            <span class="step-name">{{ label(stage) }}</span>
+          </li>
+        }
+      </ol>
+    </div>
+
+    @if (tracking()?.returnStatus) {
+      <div class="card">
+        <h2>&#8617; Return</h2>
+        <p class="current">Current: <b>{{ label(tracking()?.returnStatus ?? '') }}</b></p>
+        <ol class="steps">
+          @for (stage of returnStages; track stage) {
+            <li [class.done]="returnDone(stage)" [class.current]="returnCurrent(stage)">
+              <span class="dot">&#10003;</span>
+              <span class="step-name">{{ label(stage) }}</span>
+            </li>
+          }
+        </ol>
+      </div>
+    }
+
+    <div class="card">
+      <h2>&#128197; Timeline</h2>
+      @if (tracking()?.events?.length) {
+        <ul class="timeline">
+          @for (event of tracking()?.events; track event.id) {
+            <li>
+              <span class="tl-time">{{ event.createdAt | date: 'short' }}</span>
+              <span class="tl-label" [class.ret]="event.type === 'RETURN'">
+                {{ event.type === 'RETURN' ? '&#8617;' : '&#128666;' }} {{ event.note }}
+              </span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="muted">No events yet.</p>
+      }
+    </div>
+
+    <div class="actions">
+      @if (canRequestReturn()) {
+        <button class="btn btn-accent" (click)="requestReturn()">&#8617; Request Return</button>
+      }
+      @if (canCancelReturn()) {
+        <button class="btn btn-dark" (click)="cancelReturn()">Cancel Return Request</button>
+      }
+    </div>
+  }
+</div>

@@ -74,6 +74,23 @@ export class Orders {
   }
 
   pay(order: Order): void {
-    this.router.navigate(['/payment', order.id]);
+    this.router.navigate(['/checkout'], { queryParams: { order: order.id } });
+  }
+
+  track(order: Order): void {
+    this.router.navigate(['/orders', order.id, 'tracking']);
+  }
+
+  canTrack(order: Order): boolean {
+    return !!(order.trackingStatus || order.status === 'PAID' || order.status === 'SHIPPED');
+  }
+
+  canReturn(order: Order): boolean {
+    return this.role() === 'BUYER' && order.trackingStatus === 'DELIVERED' && !order.returnStatus;
+  }
+
+  orderTrackingStatusLabel(status: string | null): string {
+    if (!status) return 'Not started';
+    return status.replace('_', ' ').toLowerCase().replace(/^./, (c) => c.toUpperCase());
   }
 }

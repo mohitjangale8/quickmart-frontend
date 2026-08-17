@@ -1,0 +1,143 @@
+.tracking {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+
+  .muted {
+    color: var(--muted);
+  }
+
+  .head {
+    .back {
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      color: var(--primary-2);
+      text-decoration: none;
+      font-size: 0.9rem;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    h1 {
+      margin: 0 0 0.25rem;
+    }
+
+    .sub {
+      margin: 0 0 1.5rem;
+      color: var(--muted);
+    }
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+
+    h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1.05rem;
+    }
+
+    .current {
+      margin: 0 0 1rem;
+      color: var(--text);
+
+      b {
+        color: var(--primary-2);
+      }
+    }
+  }
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-size: 0.9rem;
+
+      .dot {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        flex-shrink: 0;
+        color: transparent;
+      }
+
+      &.done {
+        color: var(--text);
+
+        .dot {
+          background: var(--success);
+          border-color: var(--success);
+          color: #fff;
+        }
+      }
+
+      &.current {
+        background: var(--primary-soft);
+        color: var(--text);
+        font-weight: 650;
+
+        .dot {
+          border-color: var(--primary-2);
+          color: var(--primary-2);
+        }
+      }
+    }
+  }
+
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    li {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+
+      .tl-time {
+        color: var(--muted);
+        flex-shrink: 0;
+        width: 130px;
+        font-size: 0.8rem;
+        padding-top: 0.1rem;
+      }
+
+      .tl-label {
+        color: var(--text);
+
+        &.ret {
+          color: var(--warning);
+        }
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+}

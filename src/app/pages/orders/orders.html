@@ -38,6 +38,16 @@
             </div>
           </div>
 
+          @if (order.trackingStatus) {
+<div class="tracking-line">
+              <span class="tl-label">&#128666; Delivery</span>
+              <span class="tl-stage">{{ orderTrackingStatusLabel(order.trackingStatus) }}</span>
+              @if (order.returnStatus) {
+                <span class="tl-ret">&#8617; Return: {{ order.returnStatus.replace('_', ' ') }}</span>
+              }
+            </div>
+          }
+
           <div class="items">
             @for (item of order.items; track item.id) {
               <div class="item">
@@ -62,6 +72,17 @@
             }
           </div>
 
+          @if (order.address) {
+            <div class="ship">
+              <span class="ship-label">Ship to</span>
+              <span class="ship-body">
+                {{ order.address.name }} &middot; {{ order.address.phone }} &mdash;
+                {{ order.address.addressLine1 }}{{ order.address.addressLine2 ? ', ' + order.address.addressLine2 : '' }},
+                {{ order.address.city }}, {{ order.address.state }} &middot; {{ order.address.pincode }}
+              </span>
+            </div>
+          }
+
           <div class="order-foot">
             <span class="total">Total: <b>{{ money(order.totalAmount) }}</b></span>
             @if (order.status === 'PENDING') {
@@ -69,6 +90,12 @@
             }
             @if (canShip(order)) {
               <button class="btn btn-dark" (click)="ship(order)">&#128666; Ship Order</button>
+            }
+            @if (canTrack(order)) {
+              <button class="btn btn-outline" (click)="track(order)">&#128197; Track</button>
+            }
+            @if (canReturn(order)) {
+              <button class="btn btn-accent" (click)="track(order)">&#8617; Return</button>
             }
           </div>
         </div>

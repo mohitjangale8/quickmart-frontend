@@ -1,0 +1,145 @@
+<div class="checkout">
+  @if (loading()) {
+    <p class="muted">Loading checkout...</p>
+  } @else if (done()) {
+    <div class="success-card">
+      <div class="tick">&#10003;</div>
+      <h1>Payment Successful!</h1>
+      <p>Your order has been paid. We&rsquo;re preparing your items.</p>
+      <a class="btn btn-primary" routerLink="/orders">Go to My Orders</a>
+    </div>
+  } @else if (cartEmpty()) {
+    <div class="success-card">
+      <p class="emoji">&#128722;</p>
+      <p>Your cart is empty. Add some products before checking out.</p>
+      <a class="btn btn-primary" routerLink="/cart">Go to cart</a>
+    </div>
+  } @else if (error() && !order()) {
+    <div class="success-card">
+      <p class="emoji">&#128533;</p>
+      <p class="error">{{ error() }}</p>
+      <a class="btn btn-outline" routerLink="/orders">Back to orders</a>
+    </div>
+  } @else {
+    <h1>Checkout</h1>
+    <p class="sub">
+      @if (cartMode()) {
+        Deliver your cart to a saved address.
+      } @else {
+        Pay for order #{{ orderId() }}.
+      }
+    </p>
+
+    <div class="steps">
+      <span class="s" [class.active]="step() === 1">1. Delivery address</span>
+      <span class="sep">&#8594;</span>
+      <span class="s" [class.active]="step() === 2">2. Review &amp; pay</span>
+    </div>
+
+    <div class="layout">
+      <section class="main">
+        @if (step() === 1) {
+          <h2>Select delivery address</h2>
+
+          @if (addresses().length === 0) {
+            <p class="muted">You have no saved addresses yet. Add one below.</p>
+          }
+
+          @for (a of addresses(); track a.id) {
+            <label class="addr" [class.selected]="selectedAddressId() === a.id">
+              <input type="radio" name="addr" [checked]="selectedAddressId() === a.id" (change)="select(a)" />
+              <span class="body">
+                <b>{{ a.name }} @if (a.isDefault) { <span class="tag">Default</span> }</b>
+                <p>{{ a.addressLine1 }}{{ a.addressLine2 ? ', ' + a.addressLine2 : '' }}</p>
+                <p>{{ a.city }}, {{ a.state }} &middot; {{ a.pincode }}</p>
+                <p class="phone">Phone: {{ a.phone }}</p>
+              </span>
+            </label>
+          }
+
+          <button class="btn btn-outline add" (click)="showForm.set(!showForm())">
+            {{ showForm() ? 'Cancel' : '+ Add new address' }}
+          </button>
+
+          @if (showForm()) {
+            <form class="form" (ngSubmit)="submitForm()">
+              <div class="grid-2">
+                <label>Full name <input [ngModel]="form.name()" (ngModelChange)="form.name.set($event)" name="fname" required /></label>
+                <label>Phone (10 digits) <input [ngModel]="form.phone()" (ngModelChange)="form.phone.set($event)" name="fphone" required /></label>
+              </div>
+              <label>Address line 1 <input [ngModel]="form.line1()" (ngModelChange)="form.line1.set($event)" name="fline1" required /></label>
+              <label>Address line 2 (optional) <input [ngModel]="form.line2()" (ngModelChange)="form.line2.set($event)" name="fline2" /></label>
+              <div class="grid-3">
+                <label>City <input [ngModel]="form.city()" (ngModelChange)="form.city.set($event)" name="fcity" required /></label>
+                <label>State <input [ngModel]="form.state()" (ngModelChange)="form.state.set($event)" name="fstate" required /></label>
+                <label>Pincode <input [ngModel]="form.pincode()" (ngModelChange)="form.pincode.set($event)" name="fpincode" required /></label>
+              </div>
+              <label class="chk">
+                <input type="checkbox" [ngModel]="form.isDefault()" (ngModelChange)="form.isDefault.set($event)" name="fdefault" />
+                Set as default address
+              </label>
+              @if (error()) {
+                <p class="error">{{ error() }}</p>
+              }
+              <button class="btn btn-accent" type="submit" [disabled]="saving()">
+                {{ saving() ? 'Saving...' : 'Save address' }}
+              </button>
+            </form>
+          }
+
+          <div class="nav">
+            <button class="btn btn-accent" (click)="next()">Continue to review &#8594;</button>
+          </div>
+        } @else {
+          <h2>Confirm order</h2>
+
+          <div class="ship-to">
+            <h3>Deliver to</h3>
+            @if (selectedAddress(); as a) {
+              <b>{{ a.name }} &middot; {{ a.phone }}</b>
+              <p>{{ a.addressLine1 }}{{ a.addressLine2 ? ', ' + a.addressLine2 : '' }}, {{ a.city }}, {{ a.state }} &middot; {{ a.pincode }}</p>
+            } @else {
+              <p class="muted">No address selected.</p>
+            }
+          </div>
+
+          <div class="items">
+            @for (line of lines(); track $index) {
+              <div class="item">
+                <span class="q">{{ line.qty }} &times;</span>
+                <span class="n">{{ line.name }}</span>
+                <span class="amt">{{ money(line.amount) }}</span>
+              </div>
+            }
+            <div class="row"><span>Delivery</span><span class="free">FREE</span></div>
+            <div class="row total"><span>Total</span><span>{{ money(total()) }}</span></div>
+          </div>
+
+          @if (error()) {
+            <p class="error">{{ error() }}</p>
+          }
+
+          <div class="nav">
+            <button class="btn btn-outline" (click)="back()">&#8592; Back</button>
+            <button class="btn btn-accent pay-btn" [disabled]="paying()" (click)="pay()">
+              {{ paying() ? 'Opening Razorpay...' : 'Pay ' + money(total()) }}
+            </button>
+          </div>
+          <p class="secure-note">&#128274; Secured by Razorpay &middot; Test mode &mdash; no real money is charged</p>
+        }
+      </section>
+
+      <aside class="summary">
+        <h3>Order summary</h3>
+        @for (line of lines(); track $index) {
+          <div class="sitem">
+            <span>{{ line.name }} &times; {{ line.qty }}</span>
+            <span>{{ money(line.amount) }}</span>
+          </div>
+        }
+        <div class="srow"><span>Delivery</span><span class="free">FREE</span></div>
+        <div class="srow total"><span>Total</span><span>{{ money(total()) }}</span></div>
+      </aside>
+    </div>
+  }
+</div>

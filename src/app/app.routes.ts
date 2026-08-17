@@ -5,6 +5,7 @@ export const routes: Routes = [
   { path: '', loadComponent: () => import('./pages/home/home').then((m) => m.Home) },
   { path: 'login', loadComponent: () => import('./pages/login/login').then((m) => m.Login) },
   { path: 'register', loadComponent: () => import('./pages/register/register').then((m) => m.Register) },
+  { path: 'merchant', loadComponent: () => import('./pages/merchant/merchant').then((m) => m.Merchant) },
   {
     path: 'product/:id',
     loadComponent: () => import('./pages/product-detail/product-detail').then((m) => m.ProductDetail)
@@ -15,9 +16,9 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/cart/cart').then((m) => m.Cart)
   },
   {
-    path: 'payment/:orderId',
+    path: 'checkout',
     canActivate: [authGuard, roleGuard(['BUYER'])],
-    loadComponent: () => import('./pages/payment/payment').then((m) => m.Payment)
+    loadComponent: () => import('./pages/checkout/checkout').then((m) => m.Checkout)
   },
   {
     path: 'dashboard',
@@ -33,6 +34,11 @@ export const routes: Routes = [
     path: 'orders',
     canActivate: [authGuard, roleGuard(['BUYER', 'SELLER'])],
     loadComponent: () => import('./pages/orders/orders').then((m) => m.Orders)
+  },
+  {
+    path: 'orders/:id/tracking',
+    canActivate: [authGuard, roleGuard(['BUYER', 'SELLER'])],
+    loadComponent: () => import('./pages/tracking/tracking').then((m) => m.Tracking)
   },
   {
     path: 'products/new',
