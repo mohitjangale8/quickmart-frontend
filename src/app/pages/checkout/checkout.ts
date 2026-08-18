@@ -7,6 +7,8 @@ import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
 import { PaymentService } from '../../services/payment.service';
 import { ToastService } from '../../services/toast.service';
+import { CouponService } from '../../services/coupon.service';
+import { Breadcrumbs, Crumb } from '../../components/breadcrumbs/breadcrumbs';
 import { Address, Order, RazorpayOrderResponse } from '../../models';
 import { imageFor, rupees } from '../../utils';
 
@@ -27,7 +29,7 @@ interface Line {
 
 @Component({
   selector: 'app-checkout',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, Breadcrumbs],
   templateUrl: './checkout.html',
   styleUrl: './checkout.scss'
 })
@@ -35,10 +37,19 @@ export class Checkout {
   private readonly addressesApi = inject(AddressService);
   private readonly ordersApi = inject(OrderService);
   private readonly paymentsApi = inject(PaymentService);
+  private readonly couponsApi = inject(CouponService);
   private readonly cart = inject(CartService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
+
+  readonly crumbs: Crumb[] = [{ label: 'Cart', link: ['/cart'] }, { label: 'Checkout' }];
+
+  readonly couponCode = signal('');
+  readonly couponApplying = signal(false);
+  readonly couponMessage = signal<string | null>(null);
+  readonly couponError = signal<string | null>(null);
+  readonly discountAmount = signal(0);
 
   readonly step = signal<1 | 2>(1);
   readonly loading = signal(true);
@@ -46,7 +57,6 @@ export class Checkout {
   readonly selectedAddressId = signal<number | null>(null);
   readonly saving = signal(false);
   readonly paying = signal(false);
-  readonly done = signal(false);
   readonly error = signal<string | null>(null);
 
   readonly orderId = signal<number | null>(null);
@@ -91,9 +101,11 @@ export class Checkout {
     }));
   });
 
-  readonly total = computed<number>(() =>
+  readonly subtotalAmount = computed<number>(() =>
     this.cartMode() ? this.cart.subtotal() : (this.order()?.totalAmount ?? 0)
   );
+
+  readonly total = computed<number>(() => Math.max(0, this.subtotalAmount() - this.discountAmount()));
 
   readonly selectedAddress = computed<Address | null>(
     () => this.addresses().find((a) => a.id === this.selectedAddressId()) ?? null
@@ -195,6 +207,37 @@ export class Checkout {
       });
   }
 
+  applyCoupon(): void {
+    const code = this.couponCode().trim();
+    if (!code) return;
+    if (!this.cartMode()) {
+      this.couponError.set('Coupons can only be applied before the order is placed');
+      return;
+    }
+    this.couponApplying.set(true);
+    this.couponError.set(null);
+    this.couponMessage.set(null);
+    this.couponsApi.validate({ code, orderTotal: this.subtotalAmount() }).subscribe({
+      next: (resp) => {
+        this.couponApplying.set(false);
+        this.discountAmount.set(resp.discountAmount);
+        this.couponMessage.set(`Coupon applied! You saved ${this.money(resp.discountAmount)}`);
+      },
+      error: (err) => {
+        this.couponApplying.set(false);
+        this.discountAmount.set(0);
+        this.couponError.set(err.error?.message ?? 'Invalid coupon code');
+      }
+    });
+  }
+
+  removeCoupon(): void {
+    this.couponCode.set('');
+    this.discountAmount.set(0);
+    this.couponMessage.set(null);
+    this.couponError.set(null);
+  }
+
   next(): void {
     if (!this.selectedAddressId()) {
       this.toast.info('Select a delivery address first');
@@ -229,7 +272,8 @@ export class Checkout {
 
     if (this.cartMode()) {
       const items = this.cart.items().map((i) => ({ productId: i.productId, quantity: i.quantity }));
-      this.ordersApi.create({ items, addressId }).subscribe({
+      const couponCode = this.discountAmount() > 0 ? this.couponCode().trim() : undefined;
+      this.ordersApi.create({ items, addressId, couponCode }).subscribe({
         next: (order) => {
           this.cart.clear();
           startPayment(order.id);
@@ -276,26 +320,33 @@ export class Checkout {
               })
               .subscribe({
                 next: () => {
-                  this.done.set(true);
-                  this.toast.success(`Payment of ${this.money(this.total())} successful`);
-                  setTimeout(() => this.router.navigate(['/orders']), 1800);
+                  this.goToResult('success', orderId);
                 },
                 error: (err) => {
                   this.paying.set(false);
-                  this.error.set(err.error?.message ?? 'Payment verification failed');
+                  this.goToResult('failed', orderId, err.error?.message ?? 'Payment verification failed');
                 }
               });
           },
           modal: {
-            ondismiss: () => this.paying.set(false)
+            ondismiss: () => {
+              this.paying.set(false);
+              this.goToResult('cancelled', orderId);
+            }
           }
         };
         new window.Razorpay!(options).open();
       })
       .catch((e: Error) => {
         this.paying.set(false);
-        this.error.set(e.message);
+        this.goToResult('failed', orderId, e.message);
       });
+  }
+
+  private goToResult(status: 'success' | 'failed' | 'cancelled', orderId: number, message?: string): void {
+    this.router.navigate(['/payment/result'], {
+      queryParams: { status, orderId, message: message ?? null }
+    });
   }
 
   private loadRazorpayScript(): Promise<void> {

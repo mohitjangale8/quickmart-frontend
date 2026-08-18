@@ -3,11 +3,12 @@ import { Router, RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
+import { Breadcrumbs, Crumb } from '../../components/breadcrumbs/breadcrumbs';
 import { imageFor, rupees } from '../../utils';
 
 @Component({
   selector: 'app-cart',
-  imports: [RouterLink],
+  imports: [RouterLink, Breadcrumbs],
   templateUrl: './cart.html',
   styleUrl: './cart.scss'
 })
@@ -22,6 +23,7 @@ export class Cart {
   readonly count = this.cart.count;
 
   readonly isBuyer = this.auth.role;
+  readonly crumbs: Crumb[] = [{ label: 'Cart' }];
 
   money(v: number): string {
     return rupees(v);

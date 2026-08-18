@@ -1,4 +1,5 @@
 <div class="orders">
+  <app-breadcrumbs [crumbs]="crumbs" />
   <h1>{{ role() === 'SELLER' ? 'Order Management' : 'Your Orders' }}</h1>
 
   @if (error()) {

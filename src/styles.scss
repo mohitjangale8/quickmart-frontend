@@ -137,6 +137,14 @@ button {
   color: var(--danger);
 }
 
+.field-error {
+  display: block;
+  color: var(--danger);
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin-top: 0.15rem;
+}
+
 .msg {
   color: var(--success);
 }
@@ -214,6 +222,18 @@ html[data-theme='dark'] {
   .footer,
   footer {
     background: #070b16;
+  }
+}
+
+@media print {
+  app-navbar,
+  app-footer,
+  app-toast {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
   }
 }
 

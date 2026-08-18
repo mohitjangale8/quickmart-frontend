@@ -1,0 +1,26 @@
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+
+  a {
+    color: var(--muted);
+
+    &:hover {
+      color: var(--primary-2);
+    }
+  }
+
+  .sep {
+    color: var(--border);
+  }
+
+  .current {
+    color: var(--text);
+    font-weight: 600;
+  }
+}

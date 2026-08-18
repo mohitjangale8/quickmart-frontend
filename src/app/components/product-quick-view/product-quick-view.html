@@ -1,0 +1,55 @@
+<div class="qv-backdrop" (click)="onBackdrop($event)">
+  <div class="qv-panel" role="dialog" aria-modal="true">
+    <button class="close" (click)="close()" aria-label="Close quick view">&times;</button>
+
+    <div class="qv-img">
+      @if (image()) {
+        <img [src]="image()" alt="{{ product.name }}" />
+      } @else {
+        <div class="ph">{{ (product.brand || product.name).charAt(0) }}</div>
+      }
+      @if (off() >= 10) {
+        <span class="badge">{{ off() }}% off</span>
+      }
+    </div>
+
+    <div class="qv-body">
+      @if (product.brand) {
+        <p class="brand">{{ product.brand }}</p>
+      }
+      <h2>{{ product.name }}</h2>
+
+      @if (product.reviewCount) {
+        <p class="rating">
+          <span class="score">{{ product.averageRating }}</span>
+          <span class="stars">&#9733;</span>
+          <span class="reviews">({{ product.reviewCount }} reviews)</span>
+        </p>
+      }
+
+      <p class="price-row">
+        <span class="price">{{ money(product.price) }}</span>
+        <span class="mrp">{{ money(mrp()) }}</span>
+        <span class="discount">{{ off() }}% off</span>
+      </p>
+
+      @if (product.description) {
+        <p class="desc">{{ product.description }}</p>
+      }
+
+      <p class="stock" [class.low]="product.stockQty < 10">
+        {{ product.stockQty > 0 ? (product.stockQty + ' left in stock') : 'Out of stock' }}
+      </p>
+
+      <div class="qv-actions">
+        @if (isBuyer) {
+          <button class="btn btn-accent" [disabled]="product.stockQty <= 0" (click)="add()">Add to Cart</button>
+          <button class="btn btn-outline" (click)="toggleWishlist()">
+            {{ inWishlist ? '💙 Wishlisted' : '♡ Wishlist' }}
+          </button>
+        }
+        <a class="btn-link" [routerLink]="['/product', product.id]" (click)="close()">View full details &#8594;</a>
+      </div>
+    </div>
+  </div>
+</div>

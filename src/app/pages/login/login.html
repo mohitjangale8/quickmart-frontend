@@ -27,11 +27,34 @@
       }
       <label>
         Email
-        <input type="email" name="email" [(ngModel)]="email" placeholder="you@example.com" required />
+        <input
+          type="email"
+          name="email"
+          #emailModel="ngModel"
+          [(ngModel)]="email"
+          placeholder="you@example.com"
+          required
+          email
+        />
+        @if (emailModel.invalid && emailModel.touched) {
+          <span class="field-error">
+            {{ emailModel.errors?.['required'] ? 'Email is required' : 'Enter a valid email address' }}
+          </span>
+        }
       </label>
       <label>
         Password
-        <input type="password" name="password" [(ngModel)]="password" placeholder="Your password" required />
+        <input
+          type="password"
+          name="password"
+          #passwordModel="ngModel"
+          [(ngModel)]="password"
+          placeholder="Your password"
+          required
+        />
+        @if (passwordModel.invalid && passwordModel.touched) {
+          <span class="field-error">Password is required</span>
+        }
       </label>
       <button class="btn btn-primary btn-block" type="submit" [disabled]="loading()">
         {{ loading() ? 'Signing in...' : 'Sign in' }}

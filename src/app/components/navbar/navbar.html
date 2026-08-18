@@ -8,8 +8,9 @@
       }
       @if (role() === 'BUYER') {
         <a routerLink="/orders" routerLinkActive="active">My Orders</a>
+        <a routerLink="/wishlist" routerLinkActive="active">Wishlist</a>
       }
-      <span class="user">Hi, {{ user()?.name }}</span>
+      <a routerLink="/profile" routerLinkActive="active" class="user">Hi, {{ user()?.name }}</a>
       <button class="btn-link" (click)="logout()">Logout</button>
     } @else {
       <a routerLink="/login">Login</a>

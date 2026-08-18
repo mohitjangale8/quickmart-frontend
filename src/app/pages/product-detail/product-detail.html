@@ -16,11 +16,7 @@
     </div>
   } @else {
     @let p = product()!;
-    <nav class="crumbs">
-      <a routerLink="/">Home</a>
-      <span>/</span>
-      <span>{{ p.category || 'Products' }}</span>
-    </nav>
+    <app-breadcrumbs [crumbs]="crumbs()" />
 
     <div class="layout">
       <div class="gallery">
@@ -42,10 +38,10 @@
 
         <div class="meta">
           <span class="rating">
-            <span class="score">4.2</span>
+            <span class="score">{{ p.averageRating || '—' }}</span>
             <span class="stars">&#9733;</span>
           </span>
-          <span class="reviews">1,234 ratings &amp; 212 reviews</span>
+          <span class="reviews">{{ p.reviewCount || 0 }} review{{ p.reviewCount === 1 ? '' : 's' }}</span>
           <span class="seller">Sold by {{ sellerLabel() }}</span>
         </div>
 
@@ -76,6 +72,7 @@
           <div class="actions">
             <button class="btn btn-accent" [disabled]="p.stockQty <= 0" (click)="addToCart()">&#128722; Add to Cart</button>
             <button class="btn btn-dark" [disabled]="p.stockQty <= 0" (click)="buyNow()">&#9889; Buy Now</button>
+            <button class="btn btn-outline" (click)="toggleWishlist()">{{ inWishlist() ? '💙' : '♡' }}</button>
           </div>
         }
 
@@ -101,5 +98,49 @@
       <div><span>&#128274;</span> Secure payments</div>
       <div><span>&#9734;</span> Quality assured</div>
     </div>
+
+    <section class="reviews-section">
+      <h3>Ratings &amp; Reviews</h3>
+
+      @if (isBuyer() && !isOwner()) {
+        <div class="write-review">
+          <label>
+            Your rating
+            <select [ngModel]="reviewRating()" (ngModelChange)="reviewRating.set($event)">
+              @for (n of [5, 4, 3, 2, 1]; track n) {
+                <option [value]="n">{{ n }} &#9733;</option>
+              }
+            </select>
+          </label>
+          <textarea
+            [ngModel]="reviewComment()"
+            (ngModelChange)="reviewComment.set($event)"
+            placeholder="Share your experience with this product (optional)"
+            rows="3"
+          ></textarea>
+          <button class="btn btn-primary" [disabled]="submittingReview()" (click)="submitReview()">
+            {{ submittingReview() ? 'Submitting...' : 'Submit review' }}
+          </button>
+        </div>
+      }
+
+      @if (reviews().length === 0) {
+        <p class="muted">No reviews yet. Be the first to review this product.</p>
+      } @else {
+        <ul class="review-list">
+          @for (r of reviews(); track r.id) {
+            <li>
+              <div class="rline">
+                <span class="stars">{{ '★'.repeat(r.rating) }}{{ '☆'.repeat(5 - r.rating) }}</span>
+                <span class="who">{{ r.userName }}</span>
+              </div>
+              @if (r.comment) {
+                <p>{{ r.comment }}</p>
+              }
+            </li>
+          }
+        </ul>
+      }
+    </section>
   }
 </div>

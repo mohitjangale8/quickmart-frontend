@@ -5,6 +5,7 @@ import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
 import { TrackingResponse, Order, ReturnStatus } from '../../models';
+import { Breadcrumbs, Crumb } from '../../components/breadcrumbs/breadcrumbs';
 import { rupees } from '../../utils';
 
 const DELIVERY_STAGES = ['ORDERED', 'PACKED', 'SHIPPED', 'OUT_FOR_DELIVERY', 'DELIVERED'];
@@ -19,7 +20,7 @@ const RETURN_STAGES = [
 
 @Component({
   selector: 'app-tracking',
-  imports: [RouterLink, DatePipe],
+  imports: [RouterLink, DatePipe, Breadcrumbs],
   templateUrl: './tracking.html',
   styleUrl: './tracking.scss'
 })
@@ -37,6 +38,12 @@ export class Tracking {
 
   readonly deliveryStages = DELIVERY_STAGES;
   readonly returnStages = RETURN_STAGES;
+
+  readonly crumbs: Crumb[] = [{ label: 'My Orders', link: ['/orders'] }, { label: 'Tracking' }];
+
+  print(): void {
+    window.print();
+  }
 
   constructor() {
     const id = Number(this.route.snapshot.paramMap.get('id'));

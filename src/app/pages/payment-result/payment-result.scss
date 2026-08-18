@@ -1,0 +1,108 @@
+.result-wrap {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.result-card {
+  max-width: 480px;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2.5rem 2rem;
+  text-align: center;
+
+  .icon {
+    font-size: 3.5rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    margin: 0 0 0.5rem;
+    font-size: 1.4rem;
+  }
+
+  .subtext {
+    color: var(--muted);
+    margin: 0 0 1.5rem;
+  }
+
+  &.success h1 {
+    color: var(--success);
+  }
+
+  &.failed h1 {
+    color: var(--danger);
+  }
+
+  &.cancelled h1 {
+    color: var(--warning);
+  }
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.order-summary {
+  text-align: left;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    padding: 0.3rem 0;
+  }
+
+  .status-pill {
+    background: var(--accent-soft);
+    color: var(--warning);
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+
+    &.paid {
+      background: rgb(5 150 105 / 0.12);
+      color: var(--success);
+    }
+  }
+
+  .items {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0.5rem 0 0;
+    border-top: 1px dashed var(--border);
+    font-size: 0.85rem;
+    color: var(--muted);
+
+    li {
+      padding: 0.15rem 0;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  .btn-link {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}

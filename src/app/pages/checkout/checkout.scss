@@ -253,6 +253,28 @@
   }
 }
 
+.coupon-box {
+  display: flex;
+  gap: 0.6rem;
+  margin: 1rem 0 0.5rem;
+
+  input {
+    flex: 1;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    background: var(--surface);
+    color: var(--text);
+  }
+}
+
+.msg {
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+}
+
 .secure-note {
   text-align: center;
   margin: 0.85rem 0 0;

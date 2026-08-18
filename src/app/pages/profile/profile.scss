@@ -1,0 +1,75 @@
+.profile {
+  max-width: 420px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+h1 {
+  margin: 0 0 0.2rem;
+  font-size: 1.3rem;
+}
+
+.email {
+  color: var(--muted);
+  margin: 0 0 0.6rem;
+}
+
+.role-pill {
+  display: inline-block;
+  background: var(--primary-soft);
+  color: var(--primary-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+}
+
+.stats {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+
+    .num {
+      font-size: 1.6rem;
+      font-weight: 750;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+  }
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}

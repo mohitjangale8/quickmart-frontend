@@ -1,13 +1,6 @@
 <div class="checkout">
   @if (loading()) {
     <p class="muted">Loading checkout...</p>
-  } @else if (done()) {
-    <div class="success-card">
-      <div class="tick">&#10003;</div>
-      <h1>Payment Successful!</h1>
-      <p>Your order has been paid. We&rsquo;re preparing your items.</p>
-      <a class="btn btn-primary" routerLink="/orders">Go to My Orders</a>
-    </div>
   } @else if (cartEmpty()) {
     <div class="success-card">
       <p class="emoji">&#128722;</p>
@@ -21,6 +14,7 @@
       <a class="btn btn-outline" routerLink="/orders">Back to orders</a>
     </div>
   } @else {
+    <app-breadcrumbs [crumbs]="crumbs" />
     <h1>Checkout</h1>
     <p class="sub">
       @if (cartMode()) {
@@ -64,15 +58,65 @@
           @if (showForm()) {
             <form class="form" (ngSubmit)="submitForm()">
               <div class="grid-2">
-                <label>Full name <input [ngModel]="form.name()" (ngModelChange)="form.name.set($event)" name="fname" required /></label>
-                <label>Phone (10 digits) <input [ngModel]="form.phone()" (ngModelChange)="form.phone.set($event)" name="fphone" required /></label>
+                <label>
+                  Full name
+                  <input [ngModel]="form.name()" (ngModelChange)="form.name.set($event)" name="fname" #fname="ngModel" required />
+                  @if (fname.invalid && fname.touched) {
+                    <span class="field-error">Name is required</span>
+                  }
+                </label>
+                <label>
+                  Phone (10 digits)
+                  <input
+                    [ngModel]="form.phone()"
+                    (ngModelChange)="form.phone.set($event)"
+                    name="fphone"
+                    #fphone="ngModel"
+                    required
+                    pattern="[0-9]{10}"
+                  />
+                  @if (fphone.invalid && fphone.touched) {
+                    <span class="field-error">Enter a valid 10-digit phone number</span>
+                  }
+                </label>
               </div>
-              <label>Address line 1 <input [ngModel]="form.line1()" (ngModelChange)="form.line1.set($event)" name="fline1" required /></label>
+              <label>
+                Address line 1
+                <input [ngModel]="form.line1()" (ngModelChange)="form.line1.set($event)" name="fline1" #fline1="ngModel" required />
+                @if (fline1.invalid && fline1.touched) {
+                  <span class="field-error">Address line 1 is required</span>
+                }
+              </label>
               <label>Address line 2 (optional) <input [ngModel]="form.line2()" (ngModelChange)="form.line2.set($event)" name="fline2" /></label>
               <div class="grid-3">
-                <label>City <input [ngModel]="form.city()" (ngModelChange)="form.city.set($event)" name="fcity" required /></label>
-                <label>State <input [ngModel]="form.state()" (ngModelChange)="form.state.set($event)" name="fstate" required /></label>
-                <label>Pincode <input [ngModel]="form.pincode()" (ngModelChange)="form.pincode.set($event)" name="fpincode" required /></label>
+                <label>
+                  City
+                  <input [ngModel]="form.city()" (ngModelChange)="form.city.set($event)" name="fcity" #fcity="ngModel" required />
+                  @if (fcity.invalid && fcity.touched) {
+                    <span class="field-error">Required</span>
+                  }
+                </label>
+                <label>
+                  State
+                  <input [ngModel]="form.state()" (ngModelChange)="form.state.set($event)" name="fstate" #fstate="ngModel" required />
+                  @if (fstate.invalid && fstate.touched) {
+                    <span class="field-error">Required</span>
+                  }
+                </label>
+                <label>
+                  Pincode
+                  <input
+                    [ngModel]="form.pincode()"
+                    (ngModelChange)="form.pincode.set($event)"
+                    name="fpincode"
+                    #fpincode="ngModel"
+                    required
+                    pattern="[0-9]{6}"
+                  />
+                  @if (fpincode.invalid && fpincode.touched) {
+                    <span class="field-error">6-digit pincode</span>
+                  }
+                </label>
               </div>
               <label class="chk">
                 <input type="checkbox" [ngModel]="form.isDefault()" (ngModelChange)="form.isDefault.set($event)" name="fdefault" />
@@ -112,8 +156,36 @@
               </div>
             }
             <div class="row"><span>Delivery</span><span class="free">FREE</span></div>
+            @if (discountAmount() > 0) {
+              <div class="row"><span>Coupon discount</span><span class="free">&minus; {{ money(discountAmount()) }}</span></div>
+            }
             <div class="row total"><span>Total</span><span>{{ money(total()) }}</span></div>
           </div>
+
+          @if (cartMode()) {
+            <div class="coupon-box">
+              <input
+                type="text"
+                placeholder="Enter coupon code (e.g. WELCOME10)"
+                [ngModel]="couponCode()"
+                (ngModelChange)="couponCode.set($event)"
+                name="coupon"
+              />
+              @if (discountAmount() > 0) {
+                <button class="btn btn-outline" type="button" (click)="removeCoupon()">Remove</button>
+              } @else {
+                <button class="btn btn-outline" type="button" [disabled]="couponApplying()" (click)="applyCoupon()">
+                  {{ couponApplying() ? 'Checking...' : 'Apply' }}
+                </button>
+              }
+            </div>
+            @if (couponMessage()) {
+              <p class="msg">{{ couponMessage() }}</p>
+            }
+            @if (couponError()) {
+              <p class="error">{{ couponError() }}</p>
+            }
+          }
 
           @if (error()) {
             <p class="error">{{ error() }}</p>
@@ -138,6 +210,9 @@
           </div>
         }
         <div class="srow"><span>Delivery</span><span class="free">FREE</span></div>
+        @if (discountAmount() > 0) {
+          <div class="srow"><span>Coupon discount</span><span class="free">&minus; {{ money(discountAmount()) }}</span></div>
+        }
         <div class="srow total"><span>Total</span><span>{{ money(total()) }}</span></div>
       </aside>
     </div>

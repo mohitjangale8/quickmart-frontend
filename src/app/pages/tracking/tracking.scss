@@ -8,6 +8,8 @@
   }
 
   .head {
+    position: relative;
+
     .back {
       display: inline-block;
       margin-bottom: 0.5rem;
@@ -18,6 +20,11 @@
       &:hover {
         text-decoration: underline;
       }
+    }
+
+    .print-btn {
+      float: right;
+      font-size: 0.82rem;
     }
 
     h1 {
@@ -139,5 +146,21 @@
   .actions {
     display: flex;
     gap: 0.75rem;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .tracking {
+    max-width: 100%;
+
+    .card {
+      border: 1px solid #999;
+      box-shadow: none;
+      break-inside: avoid;
+    }
   }
 }

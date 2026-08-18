@@ -1,4 +1,5 @@
 <div class="cart">
+  <app-breadcrumbs [crumbs]="crumbs" />
   <h1>Your Cart <span class="muted">({{ count() }} item{{ count() === 1 ? '' : 's' }})</span></h1>
 
   @if (count() === 0) {

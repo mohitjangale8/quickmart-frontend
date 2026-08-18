@@ -21,6 +21,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/checkout/checkout').then((m) => m.Checkout)
   },
   {
+    path: 'payment/result',
+    canActivate: [authGuard, roleGuard(['BUYER'])],
+    loadComponent: () => import('./pages/payment-result/payment-result').then((m) => m.PaymentResult)
+  },
+  {
     path: 'dashboard',
     canActivate: [authGuard, roleGuard(['SELLER'])],
     loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard)
@@ -29,6 +34,16 @@ export const routes: Routes = [
     path: 'settings',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/settings/settings').then((m) => m.Settings)
+  },
+  {
+    path: 'profile',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/profile/profile').then((m) => m.Profile)
+  },
+  {
+    path: 'wishlist',
+    canActivate: [authGuard, roleGuard(['BUYER'])],
+    loadComponent: () => import('./pages/wishlist/wishlist').then((m) => m.Wishlist)
   },
   {
     path: 'orders',

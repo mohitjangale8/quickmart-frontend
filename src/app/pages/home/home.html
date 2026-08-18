@@ -28,6 +28,15 @@
     }
   </div>
 
+  @if (brands().length > 0) {
+    <div class="cat-chips brand-chips">
+      <button [class.active]="brand() === null" (click)="goBrand(null)">All brands</button>
+      @for (b of brands(); track b) {
+        <button [class.active]="brand() === b" (click)="goBrand(b)">{{ b }}</button>
+      }
+    </div>
+  }
+
   @if (error()) {
     <p class="error">{{ error() }}</p>
   }
@@ -63,6 +72,10 @@
             @if (off(p) >= 15) {
               <span class="badge">{{ off(p) }}% off</span>
             }
+            <button class="wish-btn" [class.active]="inWishlist(p)" (click)="toggleWishlist(p, $event)" aria-label="Toggle wishlist">
+              {{ inWishlist(p) ? '💙' : '♡' }}
+            </button>
+            <button class="quick-view-btn" (click)="openQuickView(p, $event)">Quick view</button>
           </div>
           <div class="body">
             @if (p.brand) {
@@ -70,9 +83,9 @@
             }
             <h3 class="title">{{ p.name }}</h3>
             <p class="rating">
-              <span class="score">4.2</span>
+              <span class="score">{{ p.averageRating || '4.2' }}</span>
               <span class="stars">&#9733;</span>
-              <span class="reviews">(1.2k)</span>
+              <span class="reviews">({{ p.reviewCount || 0 }})</span>
             </p>
             <p class="price-row">
               <span class="price">{{ money(p.price) }}</span>
@@ -96,5 +109,24 @@
         </div>
       }
     </div>
+
+    <div #sentinel class="sentinel">
+      @if (loadingMore()) {
+        <p class="muted">Loading more products...</p>
+      } @else if (!hasMore()) {
+        <p class="muted">You've reached the end &#127881;</p>
+      }
+    </div>
   }
 </div>
+
+@if (quickViewProduct()) {
+  <app-product-quick-view
+    [product]="quickViewProduct()!"
+    [isBuyer]="isBuyer()"
+    [inWishlist]="inWishlist(quickViewProduct()!)"
+    (closed)="closeQuickView()"
+    (addToCart)="quickViewAddToCart($event)"
+    (wishlistToggled)="toggleWishlist($event)"
+  />
+}

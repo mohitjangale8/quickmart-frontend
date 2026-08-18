@@ -27,15 +27,35 @@
       }
       <label>
         Your name
-        <input type="text" name="name" [(ngModel)]="name" placeholder="Full name" required />
+        <input type="text" name="name" #nameModel="ngModel" [(ngModel)]="name" placeholder="Full name" required minlength="2" />
+        @if (nameModel.invalid && nameModel.touched) {
+          <span class="field-error">Enter your name (at least 2 characters)</span>
+        }
       </label>
       <label>
         Email
-        <input type="email" name="email" [(ngModel)]="email" placeholder="you@example.com" required />
+        <input type="email" name="email" #emailModel="ngModel" [(ngModel)]="email" placeholder="you@example.com" required email />
+        @if (emailModel.invalid && emailModel.touched) {
+          <span class="field-error">
+            {{ emailModel.errors?.['required'] ? 'Email is required' : 'Enter a valid email address' }}
+          </span>
+        }
       </label>
       <label>
         Password
-        <input type="password" name="password" [(ngModel)]="password" placeholder="Min 6 characters, one uppercase" required minlength="6" />
+        <input
+          type="password"
+          name="password"
+          #passwordModel="ngModel"
+          [(ngModel)]="password"
+          placeholder="Min 6 characters, one uppercase"
+          required
+          minlength="6"
+          pattern="(?=.*[A-Z]).+"
+        />
+        @if (passwordModel.invalid && passwordModel.touched) {
+          <span class="field-error">Password needs 6+ characters and one uppercase letter</span>
+        }
       </label>
       <button class="btn btn-primary btn-block" type="submit" [disabled]="loading()">
         {{ loading() ? 'Creating account...' : 'Create your account' }}

@@ -5,8 +5,10 @@
   } @else if (loading()) {
     <p class="muted">Loading tracking...</p>
   } @else if (order() && tracking()) {
+    <app-breadcrumbs class="no-print" [crumbs]="crumbs" />
     <div class="head">
-      <a class="back" routerLink="/orders">&#8592; My Orders</a>
+      <a class="back no-print" routerLink="/orders">&#8592; My Orders</a>
+      <button class="btn btn-outline print-btn no-print" (click)="print()">&#128424; Print order summary</button>
       <h1>Order #{{ order()?.id }} Tracking</h1>
       <p class="sub">
         Placed {{ order()?.createdAt | date: 'medium' }} &middot;
@@ -66,7 +68,7 @@
       }
     </div>
 
-    <div class="actions">
+    <div class="actions no-print">
       @if (canRequestReturn()) {
         <button class="btn btn-accent" (click)="requestReturn()">&#8617; Request Return</button>
       }

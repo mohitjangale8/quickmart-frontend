@@ -5,11 +5,12 @@ import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
 import { Order } from '../../models';
 import { DatePipe } from '@angular/common';
+import { Breadcrumbs, Crumb } from '../../components/breadcrumbs/breadcrumbs';
 import { imageFor, rupees } from '../../utils';
 
 @Component({
   selector: 'app-orders',
-  imports: [RouterLink, DatePipe],
+  imports: [RouterLink, DatePipe, Breadcrumbs],
   templateUrl: './orders.html',
   styleUrl: './orders.scss'
 })
@@ -24,6 +25,7 @@ export class Orders {
   readonly error = signal<string | null>(null);
   readonly role = this.auth.role;
   readonly sellerId = this.auth.user;
+  readonly crumbs: Crumb[] = [{ label: 'My Orders' }];
 
   constructor() {
     this.load();

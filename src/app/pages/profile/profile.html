@@ -1,0 +1,22 @@
+<div class="profile">
+  <div class="card">
+    <div class="avatar">{{ initial() }}</div>
+    <h1>{{ user()?.name }}</h1>
+    <p class="email">{{ user()?.email }}</p>
+    <span class="role-pill">{{ user()?.role }}</span>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="num">{{ loading() ? '...' : orderCount() }}</span>
+        <span class="label">Orders placed</span>
+      </div>
+    </div>
+
+    <div class="links">
+      <a routerLink="/orders" class="btn btn-outline btn-block">View order history</a>
+      <a routerLink="/wishlist" class="btn btn-outline btn-block">My wishlist</a>
+      <a routerLink="/settings" class="btn btn-outline btn-block">Account settings</a>
+      <button class="btn btn-dark btn-block" (click)="logout()">Logout</button>
+    </div>
+  </div>
+</div>

@@ -30,6 +30,35 @@ export interface Product {
   stockQty: number;
   category?: string;
   imageUrl?: string;
+  averageRating?: number;
+  reviewCount?: number;
+}
+
+export interface Review {
+  id: number;
+  productId: number;
+  userId: number;
+  userName: string;
+  rating: number;
+  comment?: string;
+  createdAt: string;
+}
+
+export interface ReviewRequest {
+  rating: number;
+  comment?: string;
+}
+
+export interface CouponValidateRequest {
+  code: string;
+  orderTotal: number;
+}
+
+export interface CouponValidateResponse {
+  code: string;
+  discountAmount: number;
+  payableAmount: number;
+  message: string;
 }
 
 export interface ProductRequest {
@@ -128,6 +157,8 @@ export interface Order {
   buyerId: number;
   status: OrderStatus;
   totalAmount: number;
+  couponCode?: string | null;
+  discountAmount?: number;
   createdAt: string;
   trackingStatus?: TrackingStatus | null;
   returnStatus?: ReturnStatus | null;
@@ -153,6 +184,7 @@ export interface TrackingResponse {
 export interface OrderCreateRequest {
   items: { productId: number; quantity: number }[];
   addressId: number;
+  couponCode?: string;
 }
 
 export interface CheckoutResponse {

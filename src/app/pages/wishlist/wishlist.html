@@ -1,0 +1,36 @@
+<div class="wishlist">
+  <h1>My Wishlist <span class="muted">({{ items().length }})</span></h1>
+
+  @if (items().length === 0) {
+    <div class="empty">
+      <p class="emoji">&#128153;</p>
+      <p>Your wishlist is empty.</p>
+      <a class="btn btn-primary" routerLink="/">Discover products</a>
+    </div>
+  } @else {
+    <div class="grid">
+      @for (item of items(); track item.productId) {
+        <div class="card">
+          <a class="img" [routerLink]="['/product', item.productId]">
+            @if (item.imageUrl) {
+              <img [src]="item.imageUrl" alt="{{ item.name }}" />
+            } @else {
+              <div class="ph">{{ initial(item.name, item.brand) }}</div>
+            }
+          </a>
+          <div class="body">
+            @if (item.brand) {
+              <p class="brand">{{ item.brand }}</p>
+            }
+            <a class="name" [routerLink]="['/product', item.productId]">{{ item.name }}</a>
+            <p class="price">{{ money(item.price) }}</p>
+          </div>
+          <div class="actions">
+            <button class="btn btn-accent" (click)="addToCart(item.productId)">Add to Cart</button>
+            <button class="btn btn-outline" (click)="remove(item.productId)">Remove</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

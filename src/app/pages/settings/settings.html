@@ -42,11 +42,23 @@
         </label>
         <label>
           New password
-          <input type="password" [(ngModel)]="newPassword" placeholder="Min 6 chars, one uppercase" />
+          <input
+            type="password"
+            #newPasswordModel="ngModel"
+            [(ngModel)]="newPassword"
+            placeholder="Min 6 chars, one uppercase"
+            pattern="(?=.*[A-Z]).{6,}"
+          />
+          @if (newPasswordModel.invalid && newPasswordModel.touched && newPassword().length > 0) {
+            <span class="field-error">Needs 6+ characters and one uppercase letter</span>
+          }
         </label>
         <label>
           Confirm new password
           <input type="password" [(ngModel)]="confirmPassword" placeholder="Re-enter new password" />
+          @if (confirmPassword().length > 0 && confirmPassword() !== newPassword()) {
+            <span class="field-error">Passwords do not match</span>
+          }
         </label>
         <button class="btn btn-dark" [disabled]="changing()" (click)="changePassword()">
           {{ changing() ? 'Updating...' : 'Update Password' }}

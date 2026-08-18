@@ -31,6 +31,10 @@ export class ProductForm {
 
   readonly categories = ['Electronics', 'Fashion', 'Home & Kitchen', 'Beauty', 'Books', 'Sports'];
 
+  private static readonly ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+  private static readonly ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
+  private static readonly MAX_SIZE_BYTES = 5 * 1024 * 1024;
+
   constructor() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -61,6 +65,17 @@ export class ProductForm {
     input.value = '';
     if (!file) return;
     this.error.set(null);
+
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+    if (!ProductForm.ALLOWED_TYPES.includes(file.type) || !ProductForm.ALLOWED_EXTENSIONS.includes(ext)) {
+      this.error.set('Only JPEG, PNG or WEBP images are allowed');
+      return;
+    }
+    if (file.size > ProductForm.MAX_SIZE_BYTES) {
+      this.error.set('Image must be smaller than 5MB');
+      return;
+    }
+
     this.uploading.set(true);
     this.previewUrl.set(URL.createObjectURL(file));
     this.productsApi.uploadImage(file).subscribe({
