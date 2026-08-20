@@ -1,27 +1,27 @@
-<div class="auth-wrap">
+<div class="auth-wrap seller-portal">
   <div class="panel">
     <a class="logo" routerLink="/">
       <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
-        <path fill="#a5b4fc" d="M12 2 2 7l10 5 10-5-10-5Z" />
-        <path fill="#f59e0b" d="m2 17 10 5 10-5V12l-10 5-10-5v5Z" />
+        <path fill="#fde68a" d="M12 2 2 7l10 5 10-5-10-5Z" />
+        <path fill="#fff" d="m2 17 10 5 10-5V12l-10 5-10-5v5Z" />
       </svg>
-      <span><b>Quick</b>Mart</span>
+      <span><b>Quick</b>Mart <span class="badge">Merchant</span></span>
     </a>
     <div class="panel-copy">
-      <h2>Welcome back,<br />shopper.</h2>
-      <p>Sign in to continue shopping, track your orders and enjoy exclusive deals.</p>
+      <h2>Manage your store,<br />grow your sales.</h2>
+      <p>Sign in to your seller dashboard to manage products, orders and shipments.</p>
       <ul>
-        <li>&#128666; Free delivery on orders above &#8377;499</li>
-        <li>&#8617; 7-day easy returns</li>
-        <li>&#128274; Secure &amp; encrypted payments</li>
+        <li>&#128202; Real-time order &amp; inventory dashboard</li>
+        <li>&#128230; Simple shipping &amp; tracking updates</li>
+        <li>&#128176; Fast, transparent payouts</li>
       </ul>
     </div>
   </div>
 
   <div class="form-side">
     <form class="card" (ngSubmit)="submit()">
-      <h1>Sign in</h1>
-      <p class="sub">Use your QuickMart credentials to continue.</p>
+      <h1>Merchant sign in</h1>
+      <p class="sub">Use your seller account credentials to continue.</p>
       @if (error()) {
         <p class="error">{{ error() }}</p>
       }
@@ -32,7 +32,7 @@
           name="email"
           #emailModel="ngModel"
           [(ngModel)]="email"
-          placeholder="you@example.com"
+          placeholder="store@example.com"
           required
           email
         />
@@ -57,15 +57,14 @@
         }
       </label>
       <button class="btn btn-primary btn-block" type="submit" [disabled]="loading()">
-        {{ loading() ? 'Signing in...' : 'Sign in' }}
+        {{ loading() ? 'Signing in...' : 'Sign in to dashboard' }}
       </button>
-      <p class="fine">By continuing, you agree to QuickMart's Conditions of Use and Privacy Notice.</p>
     </form>
     <p class="switch">
-      New to QuickMart? <a routerLink="/register">Create your account</a>
+      New seller? <a routerLink="/merchant">Register your store</a>
     </p>
-    <p class="switch seller-switch">
-      Selling on QuickMart? <a routerLink="/seller/login">Go to merchant login</a>
+    <p class="switch buyer-switch">
+      Shopping instead? <a routerLink="/login">Buyer sign in</a>
     </p>
   </div>
 </div>

@@ -24,14 +24,12 @@ export class Login {
     if (this.loading()) return;
     this.error.set(null);
     this.loading.set(true);
-    this.auth.login({ email: this.email().trim(), password: this.password() })
+    this.auth.login({ email: this.email().trim(), password: this.password(), expectedRole: 'BUYER' })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
-          const role = this.auth.role();
           const next = this.route.snapshot.queryParamMap.get('next');
-          const fallback = role === 'SELLER' ? '/dashboard' : '/';
-          this.router.navigate(next && next.startsWith('/') ? [next] : [fallback]);
+          this.router.navigate(next && next.startsWith('/') ? [next] : ['/']);
         },
         error: (err) => this.error.set(err.error?.message ?? 'Login failed')
       });
